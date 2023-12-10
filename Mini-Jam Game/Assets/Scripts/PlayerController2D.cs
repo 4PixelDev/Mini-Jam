@@ -38,8 +38,12 @@ public class PlayerController2D : MonoBehaviour
 
     public bool canHideInBox = false;
 
-    private int maxTimeInBox = 5;
-    private int currentTime;
+    //private int maxTimeInBox = 5;
+    //private int currentTime;
+
+    Animator animator;
+
+
 
 
     // Start is called before the first frame update
@@ -47,6 +51,7 @@ public class PlayerController2D : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         playerRenderer = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>();
 
         // Ensure the Renderer is not null
         if (playerRenderer == null)
@@ -61,28 +66,35 @@ public class PlayerController2D : MonoBehaviour
         PlayerJump();
         moveInput = Input.GetAxisRaw("Horizontal");
 
-        // Check for the 'X' key press
-        if (Input.GetKeyDown(KeyCode.X))
+        HideMechanic();
+
+        void HideMechanic()
         {
-            // Toggle the state of canHideInBox
-            if (canHideInBox)
+            // Check for the 'X' key press
+            if (Input.GetKeyDown(KeyCode.X))
             {
-                canHideInBox = true;
-                Debug.Log("Player Can Hide Here");
-                // Additional actions when hiding is enabled  // Disable rendering to make the player's sprite disappear
-                playerRenderer.enabled = false;
+                // Toggle the state of canHideInBox
+                if (canHideInBox)
+                {
+                    canHideInBox = true;
+                    Debug.Log("Player Can Hide Here");
+                    // Additional actions when hiding is enabled  // Disable rendering to make the player's sprite disappear
+                    playerRenderer.enabled = false;
 
-            }
-            else
-            {
-                Debug.Log("Player Can't Hide Here");
-                // Additional actions when hiding is disabled
+                }
+                else
+                {
+                    Debug.Log("Player Can't Hide Here");
+                    // Additional actions when hiding is disabled
 
-                // Enable rendering to make the player's sprite appear
-                playerRenderer.enabled = true;
+                    // Enable rendering to make the player's sprite appear
+                    playerRenderer.enabled = true;
+                }
             }
         }
     }
+
+   
 
     private void FixedUpdate()
     {
@@ -149,6 +161,12 @@ public class PlayerController2D : MonoBehaviour
         moveInput = Input.GetAxisRaw("Horizontal");
         rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
 
+
+        if (moveInput == 0) { animator.SetBool("isRun", false); }
+        else
+        {
+            animator.SetBool("isRun", true);
+        }
         if (facingRight == false && moveInput > 0)
         {
             Flip();
@@ -157,6 +175,8 @@ public class PlayerController2D : MonoBehaviour
         {
             Flip();
         }
+
+      
         //canMove = true;
     }
 
